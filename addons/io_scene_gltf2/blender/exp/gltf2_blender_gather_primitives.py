@@ -65,9 +65,15 @@ def gather_primitives(
 
     blender_primitives, addional_materials_udim = __gather_cache_primitives(materials, blender_mesh, uuid_for_skined_data,
         vertex_groups, modifiers, export_settings)
-
-    for internal_primitive, udim_material in zip(blender_primitives, addional_materials_udim):
-
+    
+    for internal_primitive, udim_material in zip(blender_primitives, addional_materials_udim):        
+        extras=None
+        # If the material is a placeholder, we can add the material name as extra            
+        if len(materials) > 0 and export_settings['gltf_materials'] == 'PLACEHOLDER':
+            mat_index = internal_primitive['material']
+            material_at_index = materials[mat_index]
+            extras = {"MaterialName": f'("{material_at_index.name}")'}
+    
         if udim_material is None : # classic case, not an udim material
             # We already call this function, in order to retrieve uvmap info, if any
             # So here, only the cache will be used
@@ -84,7 +90,7 @@ def gather_primitives(
         primitive = gltf2_io.MeshPrimitive(
             attributes=internal_primitive['attributes'],
             extensions=__gather_extensions(blender_mesh, internal_primitive['material'], internal_primitive['uvmap_attributes_index'], export_settings),
-            extras=None,
+            extras=extras,
             indices=internal_primitive['indices'],
             material=material,
             mode=internal_primitive['mode'],

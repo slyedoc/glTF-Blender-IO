@@ -341,6 +341,15 @@ class ExportGLTF2_Base(ConvertGLTF2_Base):
         ),
         default='AUTO'
     )
+    
+    log_info: BoolProperty(
+        name='Eefault log to info',
+        description=(
+            "Log level set to INFO if True"
+            "Otherwise set to WARNING"
+        ),
+        default=True
+    )
 
     export_image_add_webp: BoolProperty(
         name='Create WebP',
@@ -1051,7 +1060,10 @@ class ExportGLTF2_Base(ConvertGLTF2_Base):
         # All custom export settings are stored in this container.
         export_settings = {}
 
-        export_settings['loglevel'] = logging.INFO
+        if self.log_info:
+            export_settings['loglevel'] = logging.INFO
+        else:
+            export_settings['loglevel'] = logging.WARNING
 
         export_settings['exported_images'] = {}
         export_settings['exported_texture_nodes'] = []
