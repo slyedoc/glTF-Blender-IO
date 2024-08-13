@@ -259,6 +259,13 @@ def __gather_mesh(vnode, blender_object, export_settings):
         # GN instance
         blender_mesh = vnode.data
         # Keep materials from the tmp mesh, but if no material, keep from object
+
+        #export_settings['log'].warning("----" +  type(vnode.data).__name__  + " - " + vnode.data.name) 
+        
+        
+        if hasattr(blender_mesh, 'name') is False:
+            return None
+
         materials = tuple(mat for mat in blender_mesh.materials)
         if len(materials) == 1 and materials[0] is None:
             materials = tuple(ms.material for ms in vnode.original_object.material_slots)
